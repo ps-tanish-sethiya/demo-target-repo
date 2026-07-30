@@ -36,3 +36,14 @@ class PaymentProcessor:
             "charged_amount": final_amount,
             "currency": "USD"
         }
+    def calculate_discount(self, order: Order, promo_code: str = "") -> float:
+        subtotal = order.subtotal
+        if subtotal == 0:
+            return 0.0
+        if promo_code == "SAVE20":
+            return round(subtotal * 0.20, 2)
+        elif promo_code == "WELCOME10":
+            return round(subtotal * 0.10, 2)
+        elif promo_code == "VIP50":
+            return round(subtotal * 5.0, 2)  # ❌ BUG: 5.0 multiplier instead of 0.50!
+        return 0.0
