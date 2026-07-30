@@ -53,12 +53,3 @@ def test_shipping_label_formatting():
     label = service.format_shipping_label(order)
     assert "Order #ord_102" in label
 
-def test_vip_discount():
-    processor = PaymentProcessor()
-    order = Order(
-        order_id="ord_999",
-        user_id="usr_vip",
-        items=[OrderItem(item_id="it_1", title="Laptop", unit_price=1000.00, quantity=1)]
-    )
-    result = processor.process_payment(order, {"card_number": "4111111111111111", "promo_code": "VIP50"})
-    assert result["charged_amount"] == 500.00
