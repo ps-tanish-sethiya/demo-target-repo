@@ -39,10 +39,10 @@ def test_payment_calculation():
     assert result["charged_amount"] == 120.00
 
 
-def test_shipping_label_formatting():
+def test_shipping_label_formatting_guest_checkout():
+    """Tests null shipping address handling (digital / guest checkout)."""
     service = OrderService()
     
-    # Guest checkout order created without explicit shipping address
     order = Order(
         order_id="ord_102",
         user_id="usr_guest",
@@ -52,4 +52,29 @@ def test_shipping_label_formatting():
     
     label = service.format_shipping_label(order)
     assert "Order #ord_102" in label
+    assert "Digital Delivery" in label or "Guest Checkout" in label
 
+
+def test_shipping_label_formatting_physical_address():
+    """Tests physical shipping address label formatting."""
+    service = OrderService()
+    
+    address = ShippingAddress(
+        street="742 Evergreen Terrace",
+        city="Springfield",
+        state="OR",
+        zip_code="97477",
+        country="USA"
+    )
+    
+    order = Order(
+        order_id="ord_103",
+        user_id="usr_003",
+        items=[OrderItem(item_id="it_4", title="Monitor", unit_price=200.00, quantity=1)],
+        shipping_address=address
+    )
+    
+    label = service.format_shipping_label(order)
+    assert "Order #ord_103" in label
+    assert "SPRINGFIELD" in label
+    assert "USA" in label
